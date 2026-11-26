@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emmanuel Ese Omonake · Junior AWS Solutions Architect</title>
+<meta name="description" content="Portfolio of Emmanuel Ese Omonake, junior AWS Solutions Architect: VPC networking, load-balanced and auto-scaling infrastructure, secure RDS layers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Colors: change these to restyle the whole site ===== */
+:root{
+  --ink:#eaf0ff; --muted:#a9b6d9; --bg1:#070b24; --bg2:#14185c; --bg3:#0b5a74;
+  --accent:#ffb454; --line:rgba(160,185,255,.22); --glass:rgba(12,18,56,.55);
+  --head:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Instrument Sans","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;color-scheme:dark}
+body{font:400 1.05rem/1.65 var(--body);color:var(--ink);background:var(--bg1);overflow-x:hidden}
+/* Background: aurora gradient + animated network canvas */
+.bg{position:fixed;inset:0;z-index:-2;
+  background:
+   radial-gradient(60vw 50vw at 12% 8%,rgba(98,70,255,.55),transparent 60%),
+   radial-gradient(55vw 45vw at 92% 18%,rgba(18,190,200,.42),transparent 62%),
+   radial-gradient(60vw 50vw at 70% 98%,rgba(255,150,80,.28),transparent 60%),
+   linear-gradient(160deg,var(--bg1),var(--bg2) 55%,var(--bg3));
+  animation:drift 28s ease-in-out infinite alternate;background-size:140% 140%}
+@keyframes drift{to{background-position:20% 12%,-10% 0,0 10%,0 0}}
+#net{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 clamp(18px,4vw,36px)}
+header.top{position:sticky;top:0;z-index:5;backdrop-filter:blur(14px);background:rgba(7,11,36,.55);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:12px}
+.logo{font:800 1.1rem var(--head);text-decoration:none;letter-spacing:.01em}
+nav{display:flex;gap:clamp(10px,2vw,22px);flex-wrap:wrap;font-size:.95rem}
+nav a{text-decoration:none;color:var(--muted)}nav a:hover{color:var(--ink)}
+.hero{min-height:88vh;display:grid;align-content:center;padding-block:72px}
+.hero h1{font:800 clamp(2.6rem,8vw,5.6rem)/.98 var(--head);letter-spacing:-.025em;max-width:11ch}
+.hero .role{font:700 clamp(1.15rem,2.6vw,1.6rem) var(--head);color:var(--accent);margin:18px 0 14px}
+.hero p.lead{max-width:56ch;color:var(--muted);font-size:1.15rem}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{display:inline-block;padding:13px 22px;border-radius:999px;font-weight:600;text-decoration:none;border:1.5px solid var(--line);background:var(--glass)}
+.btn.main{background:var(--accent);color:#1b1200;border-color:var(--accent)}
+.btn:hover{transform:translateY(-2px);transition:transform .15s}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:34px}
+.badge{padding:6px 13px;border-radius:8px;background:var(--glass);border:1px solid var(--line);font-size:.9rem}
+section{padding-block:64px}
+h2{font:800 clamp(1.8rem,4vw,2.6rem)/1.1 var(--head);letter-spacing:-.015em;margin-bottom:26px}
+h3{font:700 1.25rem var(--head);margin-bottom:6px}
+.panel{background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:clamp(20px,3vw,32px);backdrop-filter:blur(10px)}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.skill h3{font-size:1.05rem;color:var(--accent)}
+.skill p{color:var(--muted);font-size:.98rem}
+.proj{margin-bottom:20px}
+.proj .stack{color:var(--accent);font-size:.9rem;font-weight:500;margin-bottom:12px}
+.proj ul{padding-left:1.15rem;color:var(--muted)}
+.proj li{margin:6px 0}
+.tiers{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 16px;font-size:.88rem}
+.tiers span{padding:5px 11px;border-radius:7px;border:1px solid var(--line);background:rgba(255,255,255,.05)}
+.tiers i{font-style:normal;color:var(--muted)}
+.tl{border-left:2px solid var(--line);padding-left:22px;margin-left:6px}
+.tl .item{position:relative;margin-bottom:28px}
+.tl .item::before{content:"";position:absolute;left:-29px;top:9px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.tl .when{color:var(--accent);font-weight:600;font-size:.92rem}
+.tl p,.tl li{color:var(--muted)}.tl ul{padding-left:1.1rem}
+.contact{text-align:center}
+.contact .big{display:block;font:700 clamp(1.3rem,4vw,2.2rem) var(--head);margin:10px 0;word-break:break-all;text-decoration:none}
+.contact .big:hover{color:var(--accent)}
+footer{padding:30px 0 50px;text-align:center;color:var(--muted);font-size:.9rem}
+@media(prefers-reduced-motion:reduce){.bg{animation:none}html{scroll-behavior:auto}.btn:hover{transform:none}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+<canvas id="net" aria-hidden="true"></canvas>
+
+<script>
+/* =====================================================
+   EDIT YOUR CONTACT DETAILS HERE (only this block)
+   ===================================================== */
+const CONFIG = {
+  email:    "esedandolor1@gmail.com",
+  phone:    "+39 331 152 9444",   // shown on the page
+  phoneRaw: "+393311529444",      // same number, digits only, used for tap-to-call
+  github:   "https://github.com/exceldolor/Emmanuel-ese-cloud-portfolio.git",                   // e.g. "https://github.com/yourname" (leave "" to hide)
+  linkedin: "www.linkedin.com/in/emmanuel-ese-omonake-51158a242"                    // e.g. "https://linkedin.com/in/yourname" (leave "" to hide)
+};
+</script>
+
+<header class="top"><div class="wrap">
+  <a class="logo" href="#top">Emmanuel Omonake</a>
+  <nav aria-label="Main"><a href="#projects">Projects</a><a href="#skills">Skills</a><a href="#training">Training</a><a href="#history">Background</a><a href="#contact">Contact</a></nav>
+</div></header>
+
+<main id="top">
+<div class="wrap">
+
+<section class="hero">
+  <h1>Emmanuel Ese Omonake</h1>
+  <div class="role">Junior AWS Solutions Architect</div>
+  <p class="lead">I design secure, scalable cloud networks on AWS: private subnets, load-balanced Auto Scaling fleets and locked-down databases. Before cloud, I spent 15+ years reading technical drawings and building to spec. I bring the same care to every architecture.</p>
+  <div class="cta">
+    <a class="btn main" data-email href="#contact">Email me</a>
+    <a class="btn" href="#projects">See my AWS projects</a>
+  </div>
+  <div class="badges">
+    <span class="badge">AWS Solutions Architect – Associate: in progress</span>
+    <span class="badge">Level 5 Diploma in Cyber Security</span>
+    <span class="badge">CompTIA Security+ training</span>
+    <span class="badge">Git and GitHub</span>
+    <span class="badge">Learning: Linux and Terraform</span>
+    <span class="badge">Open to remote roles</span>
+  </div>
+</section>
+
+<section id="projects">
+  <h2>AWS projects</h2>
+
+  <article class="panel proj">
+    <h3>Three-tier architecture</h3>
+    <div class="stack">VPC, Subnets, Route Tables, IGW, NAT Gateway, EC2, Launch Templates, Auto Scaling, ALB, RDS, IAM, Security Groups</div>
+    <div class="tiers" aria-label="Architecture flow"><span>Internet</span><i>›</i><span>ALB (public)</span><i>›</i><span>EC2 Auto Scaling (private)</span><i>›</i><span>RDS (private)</span></div>
+    <ul>
+      <li>Separated networking, application and database layers for security and isolation.</li>
+      <li>Built public and private subnets with correct routing. Private resources reach the internet outbound-only through a NAT Gateway.</li>
+      <li>Deployed EC2 instances behind an Application Load Balancer, using Launch Templates and Auto Scaling Groups to match capacity to demand.</li>
+      <li>Placed the RDS database in private subnets, reachable only from the application tier through Security Group rules.</li>
+      <li>Applied IAM roles and least-privilege policies, designing for high availability and scalability.</li>
+    </ul>
+  </article>
+
+  <article class="panel proj">
+    <h3>VPC networking and secure infrastructure</h3>
+    <div class="stack">VPC, Subnets, Route Tables, IGW, NAT Gateway, Security Groups, VPC Peering</div>
+    <ul>
+      <li>Designed custom VPCs with segmented public and private subnets to model real-world network isolation.</li>
+      <li>Configured route tables to control traffic between subnets, the Internet Gateway and the NAT Gateway.</li>
+      <li>Wrote Security Group rules enforcing least-privilege inbound and outbound access.</li>
+      <li>Connected separate networks with VPC Peering for private VPC-to-VPC communication.</li>
+    </ul>
+  </article>
+
+  <article class="panel proj">
+    <h3>Scalable web infrastructure</h3>
+    <div class="stack">EC2, Launch Templates, Auto Scaling Groups, Application Load Balancer, Security Groups, VPC Peering</div>
+    <ul>
+      <li>Provisioned EC2 instances from standardized Launch Templates for consistent, repeatable deployments.</li>
+      <li>Configured Auto Scaling Groups to adjust capacity automatically, with an ALB spreading traffic across healthy instances.</li>
+      <li>Restricted access to required ports and sources only, and extended connectivity across environments with VPC Peering.</li>
+    </ul>
+  </article>
+</section>
+
+<section id="skills">
+  <h2>Technical skills</h2>
+  <div class="grid">
+    <div class="panel skill"><h3>Networking</h3><p>VPC, Subnets, Route Tables, Internet Gateway, NAT Gateway, VPC Peering, Security Groups</p></div>
+    <div class="panel skill"><h3>Compute and scaling</h3><p>EC2, AMI, Launch Templates, Auto Scaling, ELB, ALB, Target Groups</p></div>
+    <div class="panel skill"><h3>Storage and database</h3><p>S3, RDS, CloudFront</p></div>
+    <div class="panel skill"><h3>Security and access</h3><p>IAM, least-privilege access, cyber security fundamentals</p></div>
+    <div class="panel skill"><h3>DNS</h3><p>Route 53</p></div>
+    <div class="panel skill"><h3>Systems and security</h3><p>Server administration, networking fundamentals, incident handling, Security+ topics</p></div>
+    <div class="panel skill"><h3>Version control</h3><p>Git and GitHub: repositories, commits, branches and publishing projects</p></div>
+    <div class="panel skill"><h3>Linux</h3><p>Currently learning: command line, file system and server administration</p></div>
+    <div class="panel skill"><h3>Infrastructure as code</h3><p>Currently learning: Terraform, to build AWS environments from code</p></div>
+  </div>
+</section>
+
+<section id="training">
+  <h2>Education and training</h2>
+  <div class="panel tl">
+    <div class="item"><div class="when">Started 2023</div><h3>Level 5 Extended Diploma in Cyber Security</h3><p>London Institute of Business and Technology, UK</p></div>
+    <div class="item"><div class="when">In progress</div><h3>AWS Certified Solutions Architect – Associate</h3><p>Preparing for the exam alongside hands-on labs.</p></div>
+    <div class="item"><div class="when">In progress</div><h3>Linux and Terraform</h3><p>Learning Linux administration and Terraform for infrastructure as code on AWS.</p></div>
+    <div class="item"><div class="when">Completed</div><h3>Git and GitHub</h3><p>Version control with Git, and hosting and sharing projects on GitHub.</p></div>
+    <div class="item"><div class="when">2023</div><h3>Cisco Networking Academy</h3><p>Online training. Digital badges earned, available on request.</p></div>
+    <div class="item"><div class="when">2022</div><h3>Hacker Techniques, Tools, and Incident Handling</h3><p>Attacker techniques and tools, and how incidents are detected, handled and responded to. Transcript available on request.</p></div>
+    <div class="item"><div class="when">Training</div><h3>CompTIA Security+ and Networking Certification</h3><p>Security+ training course. Networking certification from Crew Security, India.</p></div>
+    <div class="item"><div class="when">Earlier</div><h3>National Diploma in Building Technology</h3><p>Delta State Polytechnic, Ozoro, Nigeria</p></div>
+  </div>
+</section>
+
+<section id="history">
+  <h2>Background before cloud</h2>
+  <div class="panel tl">
+    <div class="item"><div class="when">2018 – Present · Italy</div><h3>MIG Welder</h3>
+      <ul><li>MIG (GMAW) welding on fabrication and assembly work to specification.</li><li>Work from technical drawings, meeting tolerances and finish quality.</li><li>Follow safety procedures and equipment standards; work in an Italian-speaking team.</li></ul></div>
+    <div class="item"><div class="when">2008 – 2016 · Nigeria</div><h3>Building Technology Practitioner</h3>
+      <ul><li>Applied knowledge of materials, measurements and building drawings on site.</li><li>Coordinated with crews and followed site safety and quality requirements.</li><li>Built a strong base in planning, structure and attention to detail that carries into cloud architecture.</li></ul></div>
+  </div>
+  <p style="margin-top:18px;color:var(--muted)">Languages: English (fluent), Italian (basic).</p>
+</section>
+
+<section id="contact" class="contact">
+  <h2>Let’s talk</h2>
+  <p style="color:var(--muted)">I’m looking for a junior or entry-level remote cloud role.</p>
+  <a class="big" data-email id="emailBig" href="#"></a>
+  <a class="big" data-phone id="phoneBig" href="#"></a>
+  <div class="cta" style="justify-content:center">
+    <a class="btn main" data-email href="#">Send an email</a>
+    <a class="btn" id="gh" href="#" hidden>GitHub</a>
+    <a class="btn" id="li" href="#" hidden>LinkedIn</a>
+  </div>
+</section>
+
+</div>
+</main>
+<footer><div class="wrap">© <span id="yr"></span> Emmanuel Ese Omonake</div></footer>
+
+<script>
+/* Fill contact details from CONFIG */
+document.querySelectorAll("[data-email]").forEach(a=>{a.href="mailto:"+CONFIG.email; if(a.id==="emailBig")a.textContent=CONFIG.email;});
+const p=document.getElementById("phoneBig");p.href="tel:"+CONFIG.phoneRaw;p.textContent=CONFIG.phone;
+[["gh",CONFIG.github],["li",CONFIG.linkedin]].forEach(([id,u])=>{const e=document.getElementById(id);if(u){e.href=u;e.hidden=false;e.target="_blank";e.rel="noopener";}});
+document.getElementById("yr").textContent=new Date().getFullYear();
+
+/* Animated cloud-network background */
+(function(){
+  const c=document.getElementById("net"),x=c.getContext("2d");
+  const still=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let w,h,n=[];
+  function size(){w=c.width=innerWidth;h=c.height=innerHeight;
+    const count=Math.min(70,Math.floor(w*h/22000));
+    n=Array.from({length:count},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*1.8+1,hub:Math.random()<.12}));}
+  function draw(){
+    x.clearRect(0,0,w,h);
+    for(let i=0;i<n.length;i++){const a=n[i];
+      if(!still){a.x+=a.vx;a.y+=a.vy;if(a.x<0||a.x>w)a.vx*=-1;if(a.y<0||a.y>h)a.vy*=-1;}
+      for(let j=i+1;j<n.length;j++){const b=n[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<150){x.strokeStyle="rgba(150,190,255,"+(.32*(1-d/150))+")";x.lineWidth=1;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}}
+      x.fillStyle=a.hub?"rgba(255,180,84,.95)":"rgba(190,215,255,.8)";
+      x.beginPath();x.arc(a.x,a.y,a.hub?a.r+1.8:a.r,0,6.283);x.fill();
+    }
+    if(!still)requestAnimationFrame(draw);
+  }
+  size();draw();
+  addEventListener("resize",()=>{size();if(still)draw();});
+})();
+</script>
+</body>
+</html>
